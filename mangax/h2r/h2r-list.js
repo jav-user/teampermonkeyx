@@ -18,30 +18,6 @@
 
 	const Mangas = {};
 
-	/*
-	word: palabra con la que coincidir
-	query: query que se va a buscar (ej. *contiene*, empiezacon*, *terminacon) 
-*/
-
-	// function getTagsFromCategories(categories, callback) {
-	// 	const tags = [];
-	// 	categories.forEach((cat) => {
-	// 		const category = cat.category;
-	// 		for (let tag in Tags) {
-	// 			const words = Tags[tag];
-
-	// 			const match = words.some((word) => nmatch1(category, word));
-
-	// 			if (match) {
-	// 				tags.push(tag);
-
-	// 				callback(cat.$el, tag);
-	// 			}
-	// 		}
-	// 	});
-	// 	return tags;
-	// }
-
 	function getMangas() {
 		Array.from($(".book-grid-item-container")).map((el) => {
 			const categories = Array.from($(el).find(".cat-container a")).map(
@@ -54,30 +30,17 @@
 				}
 			);
 
-			// const tags = [];
-
-			// categories.forEach((cat) => {
-			// 	const category = cat.category;
-			// 	for (let tag in Tags) {
-			// 		const words = Tags[tag];
-			// 		console.log(words);
-			// 		const match = words.some((word) => nmatch1(category, word));
-
-			// 		if (match) {
-			// 			if (favoriteTags.includes(tag)) {
-			// 				cat.$el.addClass("nfavorite-tag");
-			// 			}
-
-			// 			tags.push(tag);
-			// 		}
-			// 	}
-			// });
-
 			const tags = getTagsFromCategories(
 				categories,
 				function ($category, tag) {
 					const isFavorite = favoriteTags.includes(tag);
-					$category.toggleClass("nfavorite-tag", isFavorite);
+					if (isFavorite) {
+						$category.addClass("nfavorite-tag");
+					} else {
+						$category.addClass("nmatched-tag");
+					}
+
+					console.log("category", $category.text());
 				}
 			);
 			const id = $(el).data("mid");
@@ -170,11 +133,17 @@
 		$("body").append(`<style>
 
 
-.nfavorite-tag{
-color:yellow !important;
+
+.nmatched-tag{
+color:white !important;
+background-color: black !important;
 }
 
-
+.nfavorite-tag{
+color:yellow !important;
+text-transform: uppercase;
+background-color: black !important;
+}
 .nbookmarked{
 border-width:5px;
 border-style:solid;
@@ -184,28 +153,12 @@ border-radius:10px;
 
 }
 
-.npcensored .title-text {
-
-background-color: gray;
-  color:white;
-}
-.ncensored .title-text{
-  background-color: #ff9bce;
-  color:black;
-}
-
-.nuncensored .title-text {
-  background-color: #67beee;
-
-  color:black;
-}
-
 
 
 .nfavorite {
 border-width:5px;
 border-style:solid;
-border-color: yellow;
+border-color: green;
 }
 
 

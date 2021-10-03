@@ -1,4 +1,13 @@
-const favoriteTags = ["lovey", "incest", "bath", "beach", "school", "virgin"];
+const favoriteTags = [
+	"lovey",
+	"incest",
+	"bath",
+	"beach",
+	"school",
+	"virgin",
+	"loli",
+	"shota",
+];
 const Tags = {
 	anime: ["adapted to h-anime"],
 	bath: ["bath*"],
@@ -43,6 +52,9 @@ const Tags = {
 };
 
 const nmatch1 = (word, query) => {
+	word = word.trim().toLowerCase();
+	query = query.trim().toLowerCase();
+
 	const first = query.substr(0, 1);
 	const last = query.substr(-1);
 	let rx = query.replaceAll("*", "");
@@ -50,7 +62,6 @@ const nmatch1 = (word, query) => {
 	if (last !== "*") rx = rx + "$";
 	return word.match(rx);
 };
-
 
 /*
 @categories: an array of category{	
