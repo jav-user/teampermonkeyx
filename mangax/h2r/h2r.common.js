@@ -90,9 +90,9 @@ function getTagsFromCategories(categories, callback) {
 			if (match) {
 				tags.push(tag);
 
-				callback(cat.$el, tag);
+				if (callback) callback(cat.$el, tag);
 			}
 		}
 	});
-	return tags;
+	return tags.filter((v, i, a) => a.indexOf(v) === i).sort();
 }
