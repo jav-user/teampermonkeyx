@@ -7,6 +7,7 @@
 // @match        https://hentai2read.com/hentai-list/*
 // @match        https://hentai2read.com/
 // @icon         https://www.google.com/s2/favicons?domain=hentai2read.com
+// @require      https://jav-user.github.io/teampermonkeyx/mangax/h2r/h2r.common.js
 // @grant        none
 // ==/UserScript==
 
@@ -17,71 +18,29 @@
 
 	const Mangas = {};
 
-	const favoriteTags = [
-		"lovey",
-		"incest",
-		"bath",
-		"beach",
-		"school",
-		"virgin",
-	];
-	const Tags = {
-		cen: ["censored"],
-		pcen: ["partial censorship"],
-		unc: ["un-censored"],
-		busty: ["big breasts"],
-		slim: ["small breasts"],
-		one: ["oneshot"],
-		lovey: ["happy sex", "romance", "*become lovers"],
-		virgin: ["virgin*", "defloration"],
-		serie: ["serialized"],
-		milf: ["milf*"],
-		cream: ["creampie"],
-		ntr: ["cheating", "infidelity", "netorare"],
-		bath: ["bath*"],
-		shota: ["shotacon"],
-		school: ["*school*", "*student*"],
-		incest: ["incest", "*sister*", "*brother*", "*sibling*", "cousins"],
-		sis: ["*sister*"],
-		bro: ["*brother*"],
-		sibl: ["*sibling*", "*sister*", "*brother*", "cousins"],
-		xray: ["x-ray"],
-		harem: ["harem"],
-		sed: ["seduction"],
-		loli: ["lolicon"],
-		lesb: ["yuri*"],
-		korean: ["webtoon", "korean comic"],
-		rape: ["rape", "sexual abuse"],
-		swap: ["gender bender"],
-		doujin: ["doujinshi"],
-		ecchi: ["ecchi"],
-		anime: ["adapted to h-anime"],
-		vr: ["virtual reality"],
-		twin: ["twin*"],
-		swim: ["swimsuit*", "bikini"],
-		shy: ["shy characters"],
-		friends: ["*friends*", "co-workers"],
-		idol: ["idols"],
-		spring: ["hot springs"],
-		teen: ["*younger female"],
-		color: ["full color"],
-		beach: ["beach"],
-	};
-
 	/*
 	word: palabra con la que coincidir
 	query: query que se va a buscar (ej. *contiene*, empiezacon*, *terminacon) 
 */
-	const nmatch1 = (word, query) => {
-		const first = query.substr(0, 1);
-		const last = query.substr(-1);
-		let rx = query.replaceAll("*", "");
-		if (first !== "*") rx = "^" + rx;
-		if (last !== "*") rx = rx + "$";
-		return word.match(rx);
-	};
 
- 
+	// function getTagsFromCategories(categories, callback) {
+	// 	const tags = [];
+	// 	categories.forEach((cat) => {
+	// 		const category = cat.category;
+	// 		for (let tag in Tags) {
+	// 			const words = Tags[tag];
+
+	// 			const match = words.some((word) => nmatch1(category, word));
+
+	// 			if (match) {
+	// 				tags.push(tag);
+
+	// 				callback(cat.$el, tag);
+	// 			}
+	// 		}
+	// 	});
+	// 	return tags;
+	// }
 
 	function getMangas() {
 		Array.from($(".book-grid-item-container")).map((el) => {
@@ -95,24 +54,32 @@
 				}
 			);
 
-			const tags = [];
+			// const tags = [];
 
-			categories.forEach((cat) => {
-				const category = cat.category;
-				for (let tag in Tags) {
-					const words = Tags[tag];
-					console.log(words);
-					const match = words.some((word) => nmatch1(category, word));
+			// categories.forEach((cat) => {
+			// 	const category = cat.category;
+			// 	for (let tag in Tags) {
+			// 		const words = Tags[tag];
+			// 		console.log(words);
+			// 		const match = words.some((word) => nmatch1(category, word));
 
-					if (match) {
-						if (favoriteTags.includes(tag)) {
-							cat.$el.addClass("nfavorite-tag");
-						}
+			// 		if (match) {
+			// 			if (favoriteTags.includes(tag)) {
+			// 				cat.$el.addClass("nfavorite-tag");
+			// 			}
 
-						tags.push(tag);
-					}
+			// 			tags.push(tag);
+			// 		}
+			// 	}
+			// });
+
+			const tags = getTagsFromCategories(
+				categories,
+				function ($category, tag) {
+					const isFavorite = favoriteTags.includes(tag);
+					$category.toggleClass("nfavorite-tag", isFavorite);
 				}
-			});
+			);
 			const id = $(el).data("mid");
 			const Manga = {
 				id: id,
