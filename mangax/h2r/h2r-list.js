@@ -5,9 +5,11 @@
 // @description  try to take over the world!
 // @author       You
 // @match        https://hentai2read.com/hentai-list/*
+// @match        https://hentai2read.com/bookmark/favorite/all/*
 // @match        https://hentai2read.com/
 // @icon         https://www.google.com/s2/favicons?domain=hentai2read.com
-// @require      https://jav-user.github.io/teampermonkeyx/mangax/h2r/h2r.common.js
+// @require      https://jav-user.github.io/teampermonkeyx/mangax/h2r/h2r.common.js?v1.0.1
+
 // @grant        none
 // ==/UserScript==
 
@@ -94,17 +96,25 @@
 			$item
 				.find("picture")
 				.append("<span class='nlabel-right'></span>")
-				.append("<span class='nlabel-left'></span>");
-			if (numfavs > 1) {
+				.append("<span class='nlabel-left'></span>")
+				.append("<span class='nlabel-bright'></span>");
+
+			$item.find(".move-to.text-center").remove();
+
+			if (Manga.author && Manga.author.toLowerCase() !== "unknown") {
 				$item
-					.find(".nlabel-left")
-					.append(`<span class='ntext ntext-fav'>${numfavs}</span>`);
+					.find(".nlabel-bright")
+					.append(
+						`<span class='ntext ntext-author'>${Manga.author}</span>`
+					);
 			}
 
-			if (Manga.bookmarked) {
+			if (Manga.pages && Manga.author.toLowerCase() !== "unknown") {
 				$item
-					.find(".nlabel-left")
-					.append("<span class='ntext ntext-hold'>✔</span>");
+					.find(".nlabel-bright")
+					.append(
+						`<span class='ntext ntext-pages'>${Manga.pages}pp</span>`
+					);
 			}
 
 			if (Manga.uncensored) {
@@ -123,6 +133,19 @@
 				$item
 					.find(".nlabel-right")
 					.append("<span class='ntext ntext-cen'>CEN</span>");
+			}
+
+			if (Manga.bookmarked) {
+				$item
+					.find(".nlabel-right")
+					.append("<span class='ntext ntext-hold'>HOLD</span>");
+				//✔
+			}
+
+			if (numfavs > 1) {
+				$item
+					.find(".nlabel-left")
+					.append(`<span class='ntext ntext-fav'>${numfavs}</span>`);
 			}
 
 			Mangas[id] = Manga;
@@ -144,21 +167,24 @@ color:yellow !important;
 text-transform: uppercase;
 background-color: black !important;
 }
-.nbookmarked{
-border-width:5px;
-border-style:solid;
-border-color:white;
-opacity:.6;
-border-radius:10px;
 
-}
 
 
 
 .nfavorite {
-border-width:5px;
+border-width:6px;
 border-style:solid;
-border-color: green;
+border-color: yellow;
+}
+
+.nbookmarked{
+border-width:6px;
+border-style:solid;
+border-color:green;
+
+border-radius:10px;
+opacity:.9;
+
 }
 
 
@@ -188,10 +214,18 @@ picture .nlabel-right{
   font-weight:bold;
 }
 
+picture .nlabel-bright{
+  position: absolute;
+  bottom: 40px;
+  right: 16px;
+  font-weight:bold;
+}
+
 picture .ntext{
  padding:3px;
  border-radius:5px;
  border: 1px solid white;
+ font-size:25px;
 
 }
 picture .ntext-unc{
@@ -205,6 +239,19 @@ picture .ntext-cen{
   color:white;
 
 }
+picture .ntext-author{
+  background-color:white;
+  color:black;
+  border-color:black;
+
+}
+
+picture .ntext-pages{
+  background-color:white;
+  color:black;
+  border-color:black;
+  font-size:20px;
+}
 
 picture .ntext-pcen{
   background-color:purple;
@@ -215,8 +262,7 @@ picture .ntext-pcen{
 picture .ntext-hold{
   background-color:green;
   color:white;
- border-radius:10px;
- padding:6px;
+
  border-color:black;
 }
 
@@ -224,9 +270,10 @@ picture .ntext-fav{
 
   background-color:yellow;
   color:black;
+  font-size:30px;
 
+border-color:black;
 
-  border: 3px solid black;
 
 
 }
